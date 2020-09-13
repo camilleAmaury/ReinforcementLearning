@@ -17,7 +17,7 @@
 
 ---
 
-[![Plots][screen]]()
+[![intro][screen]]()
 
 ## About
 
@@ -80,4 +80,4 @@ You should still mention me if you want to use it in the public sphere.
 
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
 [linkedin-url-1]: https://www.linkedin.com/in/camille-amaury-juge/
-[screen]: images/mnist.png
+[screen]: images/robot.png
