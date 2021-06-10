@@ -11,7 +11,7 @@ class HumanAgent(Agent):
     # <Params name="state" type="np.array(np.int)">The current state of the game</Params>
     # <Returns type="np.int">The action choosen by the agent : Player asked</Returns>
     def step(self, state):
-        action = int(input("Choose an action \n (for example '0' corresponds to the first column, first line cell)\n Available : {} = ".format(
+        action = int(input("Choose an action \n(for example '0' corresponds to the first column, first line cell)\nAvailable : {} = ".format(
             [i for i in range(state.shape[0]) if state[i] == 0])))
         return action
     

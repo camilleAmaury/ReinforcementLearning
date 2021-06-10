@@ -29,8 +29,36 @@ class TicTacToe(object):
         
     # Method launch a game
     # <Params name="verbose" type="int">The more verbose is high, the more logs you will have</Params>
+    def train_game(self, verbose=0):
+        for i in range(self.board.shape[0]):
+            turn = i%2
+            agent_turn = self.players[turn]
+            agent_value = turn+1
+            agent_not_turn = self.players[agent_value%2]
+            # agent take action
+            action = agent_turn.step_train(self.board)
+            if self.board[action] == 0:
+                # correct action
+                self.board[action] = agent_value
+                # checks for victory
+                if not self.has_win(agent_value):
+                    if self.is_board_full(verbose):
+                        agent_turn.update(self.rewards["draw_reward"])
+                        agent_not_turn.update(self.rewards["draw_reward"])
+                        break
+                else:
+                    agent_turn.update(self.rewards["win_reward"])
+                    agent_not_turn.update(self.rewards["lose_reward"])
+                    break
+            else:
+                # the player choose a wrong action (already taken)
+                agent_turn.update(self.rewards["error_reward"])
+                agent_not_turn.update(self.rewards["null_reward"])
+                break
+    
+    # Method launch a game
+    # <Params name="verbose" type="int">The more verbose is high, the more logs you will have</Params>
     def run_game(self, verbose=0):
-        done = False
         for i in range(self.board.shape[0]):
             turn = i%2
             agent_turn = self.players[turn]
@@ -46,12 +74,12 @@ class TicTacToe(object):
                 # checks for victory
                 if not self.has_win(agent_value):
                     if self.is_board_full(verbose):
-                        agent_turn.update(self.rewards["draw_reward"], 1)
-                        agent_not_turn.update(self.rewards["draw_reward"], 1)
+                        agent_turn.end_game(1)
+                        agent_not_turn.end_game(1)
                         break
                 else:
-                    agent_turn.update(self.rewards["win_reward"], 0)
-                    agent_not_turn.update(self.rewards["lose_reward"], 2)
+                    agent_turn.end_game(0)
+                    agent_not_turn.end_game(2)
                     if verbose >= 1:
                         print("Player {} wins :\n{}".format(agent_turn, self))
                     break
@@ -59,15 +87,25 @@ class TicTacToe(object):
                 # the player choose a wrong action (already taken)
                 if verbose >= 1:
                     print("Player {} choosed a wrong action : end".format(agent_turn))
-                agent_turn.update(self.rewards["error_reward"], 3)
-                agent_not_turn.update(self.rewards["null_reward"], 4)
+                agent_turn.end_game(3)
+                agent_not_turn.end_game(4)
                 break
+
+                
             
     # Method used to run multiples games and train RL agents
-    # <Params name="epochs" type="int">The number of game to play</Params>
+    # <Params name="epochs" type="int">The number of game to train</Params>
     # <Params name="verbose" type="int">The more verbose is high, the more logs you will have</Params>
     def train(self, epochs=1, verbose=0):
         for _ in tqdm(range(epochs), miniters=10000):
+            self.train_game(verbose)
+            self.reset_env()
+
+    # Method used to run multiples games
+    # <Params name="games" type="int">The number of game to play</Params>
+    # <Params name="verbose" type="int">The more verbose is high, the more logs you will have</Params>
+    def play(self, games=1, verbose=0):
+        for _ in tqdm(range(games), miniters=10000):
             self.run_game(verbose)
             self.reset_env()
             

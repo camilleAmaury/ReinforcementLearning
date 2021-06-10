@@ -16,11 +16,21 @@ class Agent(object):
     def step(self, state):
         action = np.random.choice([i for i in range(state.shape[0]) if state[i] == 0])
         return action
+
+    # Method which choose an action without updating
+    # <Params name="state" type="np.array(np.int)">The current state of the game</Params>
+    # <Returns type="np.int">The action choosen by the agent : random on available</Returns>
+    def step_train(self, state):
+        return self.step(state)
     
     # Method which update the player on a winning game
     # <Params name="reward" type="np.float">The reward amount for winning</Params>
+    def update(self, reward):
+        pass
+
+    # Method which update the player on a winning game
     # <Params name="result" type="string">The result of the game</Params>
-    def update(self, reward, result):
+    def end_game(self, result):
         self.game_played += 1
         self.results[result] += 1
         pass

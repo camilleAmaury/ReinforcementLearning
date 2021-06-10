@@ -35,10 +35,10 @@ class QLearningAgent(Agent):
         # we need to remember the last state to update it
         self.last_state = None
     
-    # Method which choose an action
+    # Method which choose an action with Q matrix update
     # <Params name="state" type="np.array(np.int)">The current state of the game</Params>
     # <Returns type="np.int">The action choosen by the agent : Reinforcement Learning : Q-Learning</Returns>
-    def step(self, state):
+    def step_train(self, state):
         action = 0
         if np.random.rand() <= self.epsilon:
             # exploration phase : random choice, on available and not available cells
@@ -56,12 +56,27 @@ class QLearningAgent(Agent):
         # update the last state
         self.last_state = temp
         return action
+
+    # Method which choose an action without updating Q matrix
+    # <Params name="state" type="np.array(np.int)">The current state of the game</Params>
+    # <Returns type="np.int">The action choosen by the agent : Reinforcement Learning : Q-Learning</Returns>
+    def step(self, state):
+        action = 0
+        if np.random.rand() <= self.epsilon:
+            # exploration phase : random choice, on available and not available cells
+            # if not available : it will helps the QLearner to make mistakes and be punished for it in order not to repeat them
+            action = np.random.choice(9)
+        else:
+            # converting to tuple helps accessing multidimensionnal arrays easily
+            state = tuple(state)
+            # exploitation phase : Bellman's equation tells us to select the state which gives us the best propagated reward
+            # this will increase mainly the winning known choices
+            action = np.argmax(self.states[state])
+        return action
     
     # Method which update the player on a winning game
     # <Params name="reward" type="np.float">The reward amount for winning</Params>
-    # <Params name="result" type="string">The result of the game</Params>
-    def update(self, reward, result):
-        Agent.update(self, reward, result)
+    def update(self, reward):
         # add the reward earned
         if self.last_state != None:
             self.states[self.last_state] = reward
